@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   esphome:
     container_name: esphome
-    image: esphome/esphome
+    image: esphome/esphome:latest
     volumes:
       - ./esphome:/config
       - /etc/localtime:/etc/localtime:ro
@@ -12,52 +10,4 @@ services:
     devices:
       - "/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0:/dev/ttyUSB0"
     privileged: true
-    restart: unless-stopped
-
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:latest
-    volumes:
-      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
-    ports:
-      - "1883:1883"
-      - "8083:8083"
-    restart: unless-stopped
-
-  influxdb:
-    container_name: influxdb
-    image: influxdb:latest
-    ports:
-      - "8086:8086"
-    volumes:
-      - ./influxdb/data:/var/lib/influxdb2
-      - ./influxdb/config:/etc/influxdb2
-    environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=your_secure_password
-      - DOCKER_INFLUXDB_INIT_ORG=your_org
-      - DOCKER_INFLUXDB_INIT_BUCKET=esphome_db
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
-    restart: unless-stopped
-
-  telegraf:
-    container_name: telegraf
-    image: telegraf:latest
-    volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - mosquitto
-      - influxdb
-    restart: unless-stopped
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana:/var/lib/grafana
     restart: unless-stopped
