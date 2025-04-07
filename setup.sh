@@ -23,6 +23,11 @@ choose_storage() {
       echo "UUID=$UUID $influxdb_volume ext4 defaults,nofail 0 2" | sudo tee -a /etc/fstab
       echo "Entry added to /etc/fstab."
     fi
+
+    export DEVICE_PATH="$device_path"
+    export USED_USB=true
+  else
+    export USED_USB=false
   fi
 }
 
@@ -37,16 +42,17 @@ choose_storage
 export DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=$TOKEN
 
 # Launch Docker Compose
-docker-compose up -d
-
-# Final instructions
-cat << EOF
-
-🎉 Setup Complete!
-
-Your Docker containers are up and running.
-
-InfluxDB Admin Token: $TOKEN
-InfluxDB Data Location: $influxdb_volume
-
-EOF
+if docker-compose up -d; then
+  echo "\n🎉 Setup Complete!"
+  echo "\nYour Docker containers are up and running."
+  echo "InfluxDB Admin Token: $TOKEN"
+  echo "InfluxDB Data Location: $influxdb_volume"
+else
+  echo "\n❌ Docker Compose failed to start."
+  if [ "$USED_USB" == true ]; then
+    echo "Unmounting USB from $influxdb_volume..."
+    sudo umount "$influxdb_volume"
+    echo "✅ USB unmounted."
+  fi
+  exit 1
+fi
