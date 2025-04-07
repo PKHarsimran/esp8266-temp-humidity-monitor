@@ -32,7 +32,7 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - /mnt/usb-drive/influxdb-data:/var/lib/influxdb2
+      - ./influxdb/data:/var/lib/influxdb2
       - ./influxdb/config:/etc/influxdb2
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
@@ -40,7 +40,7 @@ services:
       - DOCKER_INFLUXDB_INIT_PASSWORD=your_secure_password
       - DOCKER_INFLUXDB_INIT_ORG=your_org
       - DOCKER_INFLUXDB_INIT_BUCKET=esphome_db
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=your_secure_token
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
     restart: unless-stopped
 
   telegraf:
