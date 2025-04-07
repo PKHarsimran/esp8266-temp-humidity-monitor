@@ -36,5 +36,5 @@ Monitor temperature, humidity, and other environmental metrics effortlessly.
 ### 1\. Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/esp8266-temp-humidity-monitor.git
+git clone https://github.com/PKHarsimran/esp8266-temp-humidity-monitor.git
 cd esp8266-temp-humidity-monitor
