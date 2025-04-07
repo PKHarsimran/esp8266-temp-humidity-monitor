@@ -2,9 +2,6 @@ services:
   esphome:
     container_name: esphome
     image: esphome/esphome:latest
-    volumes:
-      - ./esphome:/config
-      - /etc/localtime:/etc/localtime:ro
     ports:
       - "6052:6052"
     devices:
